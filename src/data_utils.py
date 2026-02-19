@@ -1,3 +1,5 @@
+
+import os
 import numpy as np
 import pandas as pd
 
@@ -51,9 +53,15 @@ def make_dataset(m=200, seed=161):
     return df
 
 
-if __name__ == "__main__":
-    df = make_dataset()
-    df.to_csv("data/houses.csv", index=False)   #αν δεν βάλω index=False θα το γράψει σαν εξτρα στήλη στο .csv
+def load_or_create_csv(path="data/houses.csv", m=200, seed=161):
+    """
+    load or create csv
+    """
+    os.makedirs(os.path.dirname(path), exist_ok=True)
 
-    print("Saved dataset to data/houses.csv")
-    print(df.head())
+    if os.path.exists(path):
+        return pd.read_csv(path)
+
+    df = make_dataset(m=m, seed=seed)
+    df.to_csv(path, index=False)
+    return df
