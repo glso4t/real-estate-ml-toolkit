@@ -1,4 +1,5 @@
 from data_utils import load_or_create_csv
+from sklearn.linear_model import SGDRegressor
 from linear_regression import compute_cost, gradient_descent, zscore_normalize_features
 import numpy as np
 
@@ -47,6 +48,38 @@ def main():
     print("-" * 30)
     print(f"Learned Weights: {w_final}")
     print(f"Learned Bias:    {b_final:,.2f}")
+    
+    # inference for random house (120m2, 3 υπνοδωμάτια, 10 ετών)
+    x_new = np.array([120, 3, 10])
+    
+    # normalization (χρήση mu&sigma από training set)
+    x_new_norm = (x_new - mu) / sigma
+    
+    prediction = np.dot(x_new_norm, w_final) + b_final
+    print(f"\nPredicted price for 120m2, 3br, 10y: {prediction:,.2f}€")
+
+    # σφάλμα σε ευρω (δεν παίρνω το τετράγωνο για το κόστος, αλλά abs)
+    y_test_pred = np.dot(X_test_norm, w_final) + b_final
+    errors = np.abs(y_test_pred - y_test)
+    mae = np.mean(errors)
+    
+    print(f"Average error in test set: {mae:,.2f}€")
+    
+    
+    
+    # συγκρίνω με scikit
+    sk_alpha = lambda_ / len(X_train)
+    sgdr = SGDRegressor(max_iter=2000, alpha=sk_alpha, penalty='l2')
+    sgdr.fit(X_train_norm, y_train)
+
+    print("\n--- Scikit-Learn Comparison ---")
+    print(f"Sklearn Weights: {sgdr.coef_}")
+    print(f"Sklearn Bias:    {sgdr.intercept_[0]:,.2f}")
+    
+    # Σύγκριση προβλέψεων στο ίδιο σπίτι
+    sk_prediction = sgdr.predict(x_new_norm.reshape(1, -1))
+    print(f"Sklearn Prediction: {sk_prediction[0]:,.2f}€")
+    print(f"Difference: {abs(prediction - sk_prediction[0]):,.2f}€")
     
 if __name__ == "__main__":
     main()
