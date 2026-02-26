@@ -4,42 +4,49 @@ import numpy as np
 
 
 def main():
-    df = load_or_create_csv("data/houses.csv", m=200, seed=42)
-
+    #loading data
+    df = load_or_create_csv("data/houses.csv", m=200, seed=161)
     X = df[["size_m2", "bedrooms", "age"]].to_numpy()
     y = df["price"].to_numpy()
     
-    #feature scaling    
-    X_norm, mu, sigma = zscore_normalize_features(X)
-
+    # training/testing split 80/20 (training=εκπαιδεύω τον αλγόριθμο πάνω στα data, testing= κρατάω το 20% hidden για να δώ αν κανει καλές προβλέψεις)
+    train_size = int(0.8 * len(X))
     
-    n = X_norm.shape[1]
-    w = np.zeros(n)
-    b = 0.0
+    X_train, X_test = X[:train_size], X[train_size:]
+    y_train, y_test = y[:train_size], y[train_size:]
+    
+    # feature scaling    
+    X_train_norm, mu, sigma = zscore_normalize_features(X_train)
+    
+    # εφαρμόζω (x-mu)/sigma του training και στο testing set
+    X_test_norm = (X_test - mu) / sigma
+
+    # παράμετροι training
+    n = X_train_norm.shape[1]
+    w_init = np.zeros(n)
+    b_init = 0.0
     
     alpha = 0.1       
-    num_iters = 2000
-    lambda_ = 1.0
+    iters = 2000
+    lambda_ = 1.0 #regularization
     
-    #cost before training
-    print("Initial cost:", compute_cost(X_norm, y, w, b, lambda_=lambda_))
-
-    #training
-    w, b, hist = gradient_descent(X_norm, y, w, b, alpha, num_iters, lambda_=lambda_)
-
-    #cost after training
-    print("Final cost:", compute_cost(X_norm, y, w, b, lambda_=lambda_))
-    print("Learned w:", w)
-    print("Learned b:", b)
-
-    print("\nCost history:")
-    for it, c in hist[:10]:
-        print(f"iter {it}: cost {c}")
-
-    if len(hist) > 10:
-        it, c = hist[-1]
-        print(f"... iter {it}: cost {c}")
-
-
+    # Training
+    print(f"Training on {len(X_train)} samples...")
+    w_final, b_final, hist = gradient_descent(
+        X_train_norm, y_train, w_init, b_init, alpha, iters, lambda_
+    )
+    
+    # evaluation: κόστος w/o regularization για να βρω το καθαρό σφάλμα πρόβλεψης
+    train_cost = compute_cost(X_train_norm, y_train, w_final, b_final, lambda_=0) #λ=0, μας ενδιαφέρει το κόστος χωρίς την ποινή στο testing
+    test_cost = compute_cost(X_test_norm, y_test, w_final, b_final, lambda_=0)
+    
+    
+    print("-" * 30)
+    print(f"Final Train Cost: {train_cost:,.2f}")
+    print(f"Final Test Cost:  {test_cost:,.2f}")
+    print("-" * 30)
+    print(f"Learned Weights: {w_final}")
+    print(f"Learned Bias:    {b_final:,.2f}")
+    
 if __name__ == "__main__":
     main()
