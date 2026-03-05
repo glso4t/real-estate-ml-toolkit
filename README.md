@@ -13,7 +13,7 @@ The core of this project is the **manual implementation** of fundamental algorit
 To test the models, I built a custom data generator that creates a realistic house dataset.
 * **Features**: Square footage ($m^2$), Number of Bedrooms, and House Age.
 * **Target**: House Price (generated via a linear formula + Gaussian noise).
-* **Why this matters**: It allows for controlled testing of the algorithm's convergence before moving to real-world "messy" data.
+* **Why?**: It allows for controlled testing of the algorithm's convergence before moving to real-world "messy" data.
 
 ### 2. Linear Regression (`linear_regression.py`)
 Used for predicting the exact price of a property.
