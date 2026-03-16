@@ -56,8 +56,6 @@ To validate my "from scratch" code, I compared it against the industry-standard 
 To keep the project focused on fundamentals, I left out the following, which would be next steps for a production-level tool:
 1.  **Polynomial Features**: To capture non-linear trends (e.g., when price per $m^2$ increases for luxury houses).
 2.  **Real-World Datasets**: Testing on Kaggle data (e.g., Ames Housing Dataset).
-3.  **Cross-Validation**: Splitting data multiple times to ensure the model isn't biased by one specific train/test split.
-
 ---
 
 ## How to Run
