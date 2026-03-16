@@ -43,7 +43,7 @@ def compute_gradient_logistic_reg(X, y, w, b, lambda_=0.0):
         
     return dj_dw, dj_db
 
-def gradient_descent(X, y, w_in, b_in, alpha, num_iters, lambda_=0.0): 
+def gradient_descent(X, y, w_in, b_in, alpha, num_iters, lambda_=0.0, flag_for_prints=True): 
     J_history = []
     w = copy.deepcopy(w_in)  #avoid modifying global w within function
     b = b_in
@@ -58,7 +58,7 @@ def gradient_descent(X, y, w_in, b_in, alpha, num_iters, lambda_=0.0):
             J_history.append(compute_cost_logistic_reg(X, y, w, b, lambda_))
 
         # Print cost every at intervals 10 times or as many iterations if < 10
-        if i% math.ceil(num_iters / 10) == 0:
+        if flag_for_prints and i% math.ceil(num_iters / 10) == 0:
             print(f"Iteration {i:4d}: Cost {J_history[-1]}   ")
         
     return w, b, J_history

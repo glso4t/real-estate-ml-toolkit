@@ -24,17 +24,26 @@ Used for predicting the exact price of a property.
 ### 3. Logistic Regression & Classification (`logistic_regression.py`)
 Used to classify if a house is a "Good Deal" based on a price threshold.
 * **Logic**: If the actual price is < 75% of the theoretical market value, it's labeled as a `Good Deal (1)`.
-* **Sigmoid Function**: Converts the output into a probability between 0 and 1.
-* **Regularized Cost**: Binary Cross-Entropy loss with an added penalty term ($L_2$).
-
+* **Wrapper Strategy**:I implemented a Custom Wrapper Class to make my "from scratch" code compatible with Scikit-Learn’s professional evaluation tools.
 ---
 
 ## Results & Performance Analysis
 
 ### Why is the Accuracy 1.000?
-The Classification model typically achieves **100% accuracy** on the test set. 
-* **The Reason**: Since the "Good Deal" label is generated based on a strict mathematical rule within our synthetic data, the Logistic Regression model is able to find the perfect **Decision Boundary** that separates the data points.
+The Classification model typically achieves **100% accuracy** (or very close to it).
+* **The Reason**: Since the "Good Deal" label is generated using Linear Relationships (simple additions and multiplications) within our synthetic data, the Logistic Regression model is able to find the perfect **Decision Boundary** that separates the data points.
+* **Validation**: The high score confirms that the mathematical implementation of Gradient Descent is working exactly as intended for linearly separable data.
 * **Real-world Note**: In real datasets, accuracy would be lower due to human factors and missing information. Here, it simply proves that the mathematical implementation of Gradient Descent is working correctly.
+
+### Robustness: 5-Fold Cross-Validation
+To ensure the model isn't just "lucky" with a single split, I implemented **5-Fold Cross-Validation**. The data is split into 5 different parts, and the model is trained and tested 5 times. 
+* **Result**: The Mean CV Accuracy remains around **98-100%**, proving the model is highly stable.
+
+### Precision, Recall, and F1 Score (The 0.000 Result)
+I added advanced metrics (Precision, Recall, F1) to monitor if the model misses deals or gives false alarms.
+* **The "Zero" Issue**: If these metrics appear as **0.000** or trigger `UndefinedMetricWarnings`, it means that in that specific random Test Set, **there were zero "Good Deals" present**. This is a common "Imbalanced Data" scenario—if the sample has no bargains, the metrics cannot be calculated.
+
+---
 
 ### Comparison with Scikit-Learn
 To validate my "from scratch" code, I compared it against the industry-standard `sklearn` library:
